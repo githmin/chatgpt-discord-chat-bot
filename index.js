@@ -23,7 +23,6 @@ const openai = new OpenAIApi(configuration);
 // Handeling new messages
 client.on("messageCreate", async (msg) => {
   if (msg.author.bot) return;
-  if (msg.channel.id !== process.env.Channel_ID) return;
 
   // Trigger bot if a message starts with ! so that not every message is responded by the bot
   if (msg.content.startsWith("!")) {
