@@ -20,20 +20,37 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 client.on("messageCreate", async (msg) => {
-  await msg.channel.sendTyping();
-  let Log = [{ role: "system", content: "Chat bot!" }];
+  if (msg.author.bot) return;
+  if (msg.channel.id !== process.env.Channel_ID) return;
+  if (msg.content.startsWith("!")) {
+    await msg.channel.sendTyping();
+    let Log = [{ role: "system", content: "Chat bot!" }];
 
-  Log.push({
-    role: "user",
-    content: msg.content,
-  });
+    let prevMsgs = await msg.channel.messages.fetch({ limit: 20 });
+    prevMsgs.reverse();
 
-  const response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: Log,
-  });
+    prevMsgs.forEach((m) => {
+      if (m.author.id !== client.user.id && msg.author.bot) return;
+      if (m.author.id !== msg.author.id) return;
 
-  msg.reply(response.data.choices[0].message.content);
+      Log.push({
+        role: "user",
+        content: m.content,
+      });
+    });
+
+    Log.push({
+      role: "user",
+      content: msg.content,
+    });
+
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: Log,
+    });
+
+    msg.reply(response.data.choices[0].message.content);
+  }
 });
 
 client.login(process.env.Discord_Token);
