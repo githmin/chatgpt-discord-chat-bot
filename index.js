@@ -26,26 +26,30 @@ client.on("messageCreate", async (msg) => {
 
   // Trigger bot if a message starts with ! so that not every message is responded by the bot
   if (msg.content.startsWith("!")) {
-    await msg.channel.sendTyping();
-    let ConvoLog = [{ role: "system", content: "Discord Chat Bot" }];
+    try {
+      await msg.channel.sendTyping();
+      let ConvoLog = [{ role: "system", content: "Discord Chat Bot" }];
 
-    let prevMsgs = await msg.channel.messages.fetch({ limit: 20 });
-    prevMsgs.reverse();
-    prevMsgs.forEach((m) => {
-      if (m.author.id !== client.user.id && msg.author.bot) return;
-      if (m.author.id !== msg.author.id) return;
+      let prevMsgs = await msg.channel.messages.fetch({ limit: 20 });
+      prevMsgs.reverse();
+      prevMsgs.forEach((m) => {
+        if (m.author.id !== client.user.id && msg.author.bot) return;
+        if (m.author.id !== msg.author.id) return;
 
-      ConvoLog.push({
-        role: "user",
-        content: m.content,
+        ConvoLog.push({
+          role: "user",
+          content: m.content,
+        });
       });
-    });
 
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: ConvoLog,
-    });
+      const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: ConvoLog,
+      });
 
-    msg.reply(response.data.choices[0].message.content);
+      msg.reply(response.data.choices[0].message.content);
+    } catch (e) {
+      console.log(e);
+    }
   }
 });
