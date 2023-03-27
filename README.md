@@ -14,11 +14,9 @@ This repo is a Discord chat bot that uses OpenAI's GPT-3.5-turbo model to genera
 	 
     `Discord_Token=<YOUR_DISCORD_TOKEN>`
 	    
-	 `OpenAI_API=<YOUR_OPENAI_API_KEY>`
+	`OpenAI_API=<YOUR_OPENAI_API_KEY>`
 	    
-	 `Channel_ID=<YOUR_CHANNEL_ID>`
-	    
-	    Note: Replace the placeholders with your actual values.
+        Note: Replace the placeholders with your actual values.
     
 4.  Start the bot by running the following command:
     
